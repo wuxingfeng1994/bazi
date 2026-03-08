@@ -56,16 +56,18 @@ const app = createApp({
                 year: selectedYear.value,
                 month: selectedMonth.value,
                 day: selectedDay.value,
-                hour: selectedHour.value
+                hour: selectedHour.value,
+                minute: selectedMinute.value
             };
-            // 正确修改bazi中的mainStars
-            
-            console.log('计算八字，日期:', date);
-            //模拟数据
-            const tg = ['甲', '乙', '戊','癸'];///天干
-            const dz = ['戌', '亥', '午', '亥'];//地支
 
-            bazi.value.heavenlyStems = tg///天干
+            const result = calculateBazi(date);
+            const tg = result.pillars.map(item => item[0]);
+            const dz = result.pillars.map(item => item[1]);
+
+            personInfo.value.solar = `${date.year}年${date.month}月${date.day}日 ${String(date.hour).padStart(2, '0')}:${String(date.minute).padStart(2, '0')}:00`;
+            console.log('计算八字，日期:', date, '节气信息:', result.solarTermInfo);
+
+            bazi.value.heavenlyStems = tg;//天干
             bazi.value.earthlyBranches = dz;//地支
             for (let i = 0; i < 4; i++) {
                 bazi.value.mainStars[i] = TEN_GODS[tg[2]][tianGan.indexOf(tg[i])];//主星
