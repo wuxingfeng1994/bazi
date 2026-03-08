@@ -4937,6 +4937,9 @@ const jieQidate=[
 const BASE_YEAR = 1900;
 const BASE_DAY = new Date(1900, 0, 31);
 const BASE_DAY_JIAZI_INDEX = 36; // 1900-01-31 为庚子日
+const SUPPORTED_YEAR_COUNT = Math.floor(jieQidate.length / 24);
+const MAX_YEAR = BASE_YEAR + SUPPORTED_YEAR_COUNT - 1;
+const JIEQI_NAME_OFFSET = 22; // 节气数据以小寒开头，jieQi 数组以立春开头
 
 const monthBranchByJie = ['寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子', '丑'];
 
@@ -4961,13 +4964,13 @@ const parseJieQiDateCode = (code, year, termIndex) => {
 const getYearSolarTerms = (year) => {
     const startIndex = (year - BASE_YEAR) * 24;
     if (startIndex < 0 || startIndex + 23 >= jieQidate.length) {
-        throw new Error(`节气数据超出范围: ${year}（支持 ${BASE_YEAR} - ${BASE_YEAR + Math.floor(jieQidate.length / 24) - 1}）`);
+        throw new Error(`节气数据超出范围: ${year}（支持 ${BASE_YEAR} - ${MAX_YEAR}）`);
     }
 
-    return jieQi.map((name, termIndex) => {
-        const code = jieQidate[startIndex + termIndex];
+    return jieQidate.slice(startIndex, startIndex + 24).map((code, termIndex) => {
+        const normalizedTermIndex = normalizeIndex(termIndex + JIEQI_NAME_OFFSET, 24);
         return {
-            name,
+            name: jieQi[normalizedTermIndex],
             termIndex,
             isJie: termIndex % 2 === 0,
             date: parseJieQiDateCode(code, year, termIndex)
@@ -4977,7 +4980,7 @@ const getYearSolarTerms = (year) => {
 
 const getPrevSolarTerm = (birthDate, onlyJie = false) => {
     const year = birthDate.getFullYear();
-    const candidateYears = [year - 1, year, year + 1];
+    const candidateYears = [year - 1, year, year + 1].filter((candidateYear) => candidateYear >= BASE_YEAR && candidateYear <= MAX_YEAR);
     let prevTerm = null;
 
     candidateYears.forEach((y) => {
@@ -4997,7 +5000,7 @@ const getPrevSolarTerm = (birthDate, onlyJie = false) => {
 
 const getYearPillar = (birthDate) => {
     const currentYearTerms = getYearSolarTerms(birthDate.getFullYear());
-    const liChun = currentYearTerms[0].date;
+    const liChun = currentYearTerms[2].date;
     const ganzhiYear = birthDate >= liChun ? birthDate.getFullYear() : birthDate.getFullYear() - 1;
     return getGanzhiByYear(ganzhiYear);
 };
@@ -5008,7 +5011,7 @@ const getMonthPillar = (birthDate, yearPillar) => {
         throw new Error('无法定位出生时刻前的节气（节）');
     }
 
-    const monthOrder = Math.floor(prevJie.termIndex / 2);
+    const monthOrder = normalizeIndex(Math.floor(prevJie.termIndex / 2) - 1, 12);
     const monthBranch = monthBranchByJie[monthOrder];
 
     const yearStem = yearPillar[0];
