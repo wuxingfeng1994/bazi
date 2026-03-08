@@ -1,0 +1,266 @@
+/* 圆形按钮样式 */
+.btn-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 表格无垂直线样式 */
+.table-no-vertical td,
+.table-no-vertical th {
+    border-left: none !important;
+    border-right: none !important;
+}
+
+/* 表格单元格垂直靠上样式 */
+.table-no-vertical td.align-top {
+    vertical-align: top;
+}
+
+/* 浅灰色背景样式 */
+.bg-gray-50 {
+    background-color: #f9fafb !important;
+}
+
+/* 灰色背景样式 */
+.bg-gray-100 {
+    background-color: #f3f4f6 !important;
+}
+
+/* 木属性颜色样式 */
+.text-wood {
+    color: #22c55e !important;
+}
+
+/* 火属性颜色样式 */
+.text-fire {
+    color: #ef4444 !important;
+}
+
+/* 土属性颜色样式 */
+.text-earth {
+    color: #a17a06 !important;
+}
+
+/* 金属性颜色样式 */
+.text-metal {
+    color: #cfda40 !important;
+}
+
+/* 水属性颜色样式 */
+.text-water {
+    color: #3b82f6 !important;
+}
+
+/* 灰色文本样式 */
+.text-gray-400 {
+    color: #9ca3af !important;
+}
+
+/* 深灰色文本样式 */
+.text-gray-500 {
+    color: #6b7280 !important;
+}
+
+/* 字体大小样式 */
+.fs-4 {
+    font-size: 1.5rem !important;
+}
+
+/* 字体大小样式 */
+.fs-5 {
+    font-size: 1.1rem !important;
+}
+
+/* 半透明白色文本样式 */
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* 小字体样式 */
+.small {
+    font-size: 0.875rem;
+}
+
+/* 日期选择器遮罩层样式 */
+.picker-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-end;
+    z-index: 1050;
+}
+
+/* 日期选择器容器样式 */
+.picker-container {
+    width: 100%;
+    background-color: white;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* 日期选择器头部样式 */
+.picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 日期选择器标签容器样式 */
+.picker-tabs {
+    display: flex;
+    gap: 12px;
+}
+
+/* 日期选择器标签样式 */
+.picker-tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* 日期选择器激活标签样式 */
+.picker-tab.active {
+    background-color: #f5f2f2;
+    color: #000;
+    font-weight: 600;
+}
+
+/* 日期选择器"今天"标签样式 */
+.picker-tab.today {
+    border-radius: 50%;
+    padding: 8px 12px;
+}
+
+/* 日期选择器确认按钮样式 */
+.picker-confirm {
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 日期选择器主体样式 */
+.picker-body {
+    display: flex;
+    padding: 20px 0;
+    height: 310px;
+    position: relative;
+}
+
+/* 日期选择器主体上下渐变效果 */
+.picker-body::before,
+.picker-body::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* 日期选择器主体顶部渐变 */
+.picker-body::before {
+    top: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+
+/* 日期选择器主体底部渐变 */
+.picker-body::after {
+    bottom: 20px;
+    background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+
+/* 日期选择器列样式 */
+.picker-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* 日期选择器列中间高亮区域样式 */
+.picker-column::before {
+    content: '';
+    position: absolute;
+    top: 145px;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 35px;
+    background-color: #cac3c3;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* 日期选择器列标签样式 */
+.picker-label {
+    font-size: 14px;
+    height: 20px;
+    color: #999;
+    margin-bottom: 5px;
+    z-index: 0;
+}
+
+/* 日期选择器轮子样式 */
+.picker-wheel {
+    overflow-y: auto;
+    width: 100%;
+    height: 245px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    z-index: 0;
+}
+
+/* 日期选择器轮子滚动条样式 */
+.picker-wheel::-webkit-scrollbar {
+    display: none;
+}
+
+/* 日期选择器选项样式 */
+.picker-item {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: #999;
+    scroll-snap-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 0;
+}
+
+/* 日期选择器激活选项样式 */
+.picker-item.picker-item-active {
+    color: #000;
+    font-size: 28px;
+    font-weight: 600;
+    z-index: 1;
+}
+
+/* 日期选择器占位空间样式 */
+.picker-spacer {
+    height: 105px !important;
+    flex-shrink: 0;
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八字排盘</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app" class="bg-light min-vh-100">
+        <div class="card rounded-0 border-0">
+            <div class="card-body p-2" style="background: #000;">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 me-2">
+                        <div class="border border-warning rounded-circle p-2">
+                            <span style="font-size: 3rem;">{{ personInfo.zodiac }}</span>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="text-white mb-0 fs-5">{{ personInfo.name }}</h5>
+                        <p class="text-white-50 mb-0 small">农历：{{ personInfo.lunar }}</p>
+                        <p class="text-white-50 mb-0 small">阳历：{{ personInfo.solar }}</p>
+                    </div>
+                    <div class="flex-shrink-0 ms-2">
+                        <button class="btn btn-link text-white-50 p-0" @click="showPicker = true">
+                            <i class="bi bi-eye fs-5 me-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid p-0">
+            <div class="table-responsive">
+                <table class="table mb-0 bg-white table-no-vertical small">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="text-center py-2 border-0">日期</th>
+                            <th class="text-center py-2 border-0" v-for="(name, index) in bazi.names" :key="index">{{ name }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center py-2 fw-bold border-0">主星</td>
+                            <td class="text-center py-2 border-0" v-for="(star, index) in bazi.mainStars" :key="index">{{ star }}</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="text-center py-2 fw-bold border-0">天干</td>
+                            <td class="text-center py-2 border-0" v-for="(stem, index) in bazi.heavenlyStems" :key="index">
+                                <span class="fs-4" :class="getElementClass(stem)">{{ stem }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center py-2 fw-bold border-0">地支</td>
+                            <td class="text-center py-2 border-0" v-for="(branch, index) in bazi.earthlyBranches" :key="index">
+                                <span class="fs-4" :class="getElementClass(branch)">{{ branch }}</span>
+                            </td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="text-center py-2 fw-bold border-0">藏干</td>
+                            <td class="text-center py-2 border-0 align-top" v-for="(stems, index) in bazi.hiddenStemsList" :key="index">
+                                <div v-for="(stem, sIndex) in stems" :key="sIndex" :class="getElementClass(stem)">{{ stem }}{{ wuXing[stem] }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center py-2 fw-bold border-0">副星</td>
+                            <td class="text-center py-2 border-0 align-top" v-for="(stars, index) in bazi.auxiliaryStarsList" :key="index">
+                                <div v-for="(star, sIndex) in stars" :key="sIndex">{{ star }}</div>
+                            </td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="text-center py-2 fw-bold border-0">星运</td>
+                            <td class="text-center py-2 border-0" v-for="(luck, index) in bazi.starLucks" :key="index">{{ luck }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center py-2 fw-bold border-0">自坐</td>
+                            <td class="text-center py-2 border-0" v-for="(sit, index) in bazi.selfSits" :key="index">{{ sit }}</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="text-center py-2 fw-bold border-0">空亡</td>
+                            <td class="text-center py-2 border-0" v-for="(death, index) in bazi.emptyDeaths" :key="index">{{ death }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center py-2 fw-bold border-0">纳音</td>
+                            <td class="text-center py-2 border-0" v-for="(nayin, index) in bazi.nayins" :key="index">{{ nayin }}</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="text-center py-2 fw-bold border-0">神煞</td>
+                            <td class="text-center py-2 border-0 align-top" v-for="(evils, index) in bazi.divineEvilsList" :key="index">
+                                <div v-for="(evil, eIndex) in evils" :key="eIndex">{{ evil }}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div v-if="showPicker" class="picker-overlay" @click.self="showPicker = false">
+            <div class="picker-container">
+                <div class="picker-header">
+                    <div class="picker-tabs">
+                        <span class="picker-tab active">公历</span>
+                        <span class="picker-tab">农历</span>
+                        <span class="picker-tab today active" @click="scrollToToday">今</span>
+                    </div>
+                    <button class="picker-confirm" @click="confirmDate">确定</button>
+                </div>
+                <div class="picker-body">
+                    <div class="picker-column">
+                        <div class="picker-label">年</div>
+                        <div class="picker-wheel" @scroll="handleWheelScroll('year', $event)">
+                            <div class="picker-spacer"></div>
+                            <div 
+                                v-for="year in years" 
+                                :key="year"
+                                class="picker-item"
+                                :class="{ 'picker-item-active': year === selectedYear }"
+                            >{{ year }}</div>
+                            <div class="picker-spacer"></div>
+                        </div>
+                    </div>
+                    <div class="picker-column">
+                        <div class="picker-label">月</div>
+                        <div class="picker-wheel" @scroll="handleWheelScroll('month', $event)">
+                            <div class="picker-spacer"></div>
+                            <div 
+                                v-for="month in months" 
+                                :key="month"
+                                class="picker-item"
+                                :class="{ 'picker-item-active': month === selectedMonth }"
+                            >{{ month }}</div>
+                            <div class="picker-spacer"></div>
+                        </div>
+                    </div>
+                    <div class="picker-column">
+                        <div class="picker-label">日</div>
+                        <div class="picker-wheel" @scroll="handleWheelScroll('day', $event)">
+                            <div class="picker-spacer"></div>
+                            <div 
+                                v-for="day in days" 
+                                :key="day"
+                                class="picker-item"
+                                :class="{ 'picker-item-active': day === selectedDay }"
+                            >{{ day }}</div>
+                            <div class="picker-spacer"></div>
+                        </div>
+                    </div>
+                    <div class="picker-column">
+                        <div class="picker-label">时</div>
+                        <div class="picker-wheel" @scroll="handleWheelScroll('hour', $event)">
+                            <div class="picker-spacer"></div>
+                            <div 
+                                v-for="hour in hours"
+                                :key="hour"
+                                class="picker-item"
+                                :class="{ 'picker-item-active': hour === selectedHour }"
+                            >{{ hour }}</div>
+                            <div class="picker-spacer"></div>
+                        </div>
+                    </div>
+                    <div class="picker-column">
+                        <div class="picker-label">分</div>
+                        <div class="picker-wheel" @scroll="handleWheelScroll('minute', $event)">
+                            <div class="picker-spacer"></div>
+                            <div 
+                                v-for="minute in minutes"
+                                :key="minute"
+                                class="picker-item"
+                                :class="{ 'picker-item-active': minute === selectedMinute }"
+                            >{{ minute }}</div>
+                            <div class="picker-spacer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/TOOST.JS"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
