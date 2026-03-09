@@ -100,6 +100,21 @@
 
         <div v-if="showPicker" class="picker-overlay" @click.self="showPicker = false">
             <div class="picker-container">
+                <div class="picker-person-info">
+                    <div class="picker-info-row">
+                        <div class="picker-name-input">
+                            <span class="input-label">姓名</span>
+                            <input type="text" v-model="personInfo.name" placeholder="请输入姓名">
+                        </div>
+                        <div class="picker-gender-select">
+                            <span class="input-label">性别</span>
+                            <div class="gender-slider">
+                                <span :class="['gender-option', personInfo.gender === '男' ? 'active' : '']" @click="personInfo.gender = '男'">男</span>
+                                <span :class="['gender-option', personInfo.gender === '女' ? 'active' : '']" @click="personInfo.gender = '女'">女</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="picker-header">
                     <div class="picker-tabs">
                         <span class="picker-tab active">公历</span>

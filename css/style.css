@@ -264,3 +264,84 @@
     height: 105px !important;
     flex-shrink: 0;
 }
+
+/* 个人信息输入区域样式 */
+.picker-person-info {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 信息行样式 */
+.picker-info-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* 姓名输入容器样式 */
+.picker-name-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    max-width: 200px;
+}
+
+/* 性别选择容器样式 */
+.picker-gender-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 输入标签样式 */
+.input-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* 姓名输入框样式 */
+.picker-name-input input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    flex: 1;
+    min-width: 0;
+}
+
+/* 姓名输入框聚焦样式 */
+.picker-name-input input:focus {
+    border-color: #000;
+}
+
+/* 性别选择滑块容器样式 */
+.gender-slider {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* 性别选择选项样式 */
+.gender-option {
+    flex: 1;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #f9fafb;
+    color: #666;
+}
+
+/* 性别选择激活选项样式 */
+.gender-option.active {
+    background-color: #000;
+    color: white;
+    font-weight: 600;
+}

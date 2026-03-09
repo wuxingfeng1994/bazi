@@ -15,10 +15,11 @@ const app = createApp({
         };
 
         const personInfo = ref({
-            name: '吴兴锋',
-            lunar: '1994年十月廿六 亥时 乾造',
-            solar: '1994年11月28日 21:49:33',
-            zodiac: '🐶'
+            name: 'XXX',
+            gender: '男',
+            lunar: '',
+            solar: '',
+            zodiac: ''
         });
 
         const bazi = ref({
@@ -52,21 +53,21 @@ const app = createApp({
          */
         const confirmDate = () => {
             showPicker.value = false;
-            const date = {
-                year: selectedYear.value,
-                month: selectedMonth.value,
-                day: selectedDay.value,
-                hour: selectedHour.value,
-                minute: selectedMinute.value
-            };
+            const date =new Date(
+                selectedYear.value,
+                selectedMonth.value-1,
+                selectedDay.value,
+                selectedHour.value,
+                selectedMinute.value
+            );
+            // 计算八字
+            let baziResult = calculateBazi(date);
+            personInfo.value.lunar =  solarToLunar(date) + ' '+ baziResult[1][2] + '时 ' + (personInfo.value.gender === '男' ? ' 乾造' : ' 坤造');
+            personInfo.value.solar = date.toLocaleString();
+            personInfo.value.zodiac = Object.values(shenxiaoemail)[(personInfo.value.lunar.substring(0,4)+2) % 12];
 
-            const result = calculateBazi(date);
-            const tg = result.pillars.map(item => item[0]);
-            const dz = result.pillars.map(item => item[1]);
-
-            personInfo.value.solar = `${date.year}年${date.month}月${date.day}日 ${String(date.hour).padStart(2, '0')}:${String(date.minute).padStart(2, '0')}:00`;
-            console.log('计算八字，日期:', date, '节气信息:', result.solarTermInfo);
-
+            const tg = baziResult[0];//天干
+            const dz = baziResult[1];//地支
             bazi.value.heavenlyStems = tg;//天干
             bazi.value.earthlyBranches = dz;//地支
             for (let i = 0; i < 4; i++) {
