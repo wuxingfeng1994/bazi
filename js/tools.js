@@ -7,7 +7,12 @@ const wuXing = {
     '子': '水', '丑': '土', '寅': '木', '卯': '木', '辰': '土', '巳': '火',
     '午': '火', '未': '土', '申': '金', '酉': '金', '戌': '土', '亥': '水'
 };
-
+const dztotg = {
+    '甲':'甲','乙':'乙','丙':'丙','丁':'丁','戊':'戊',
+    '己':'己','庚':'庚','辛':'辛','壬':'壬','癸':'癸',
+    '子': '壬','丑': '己','寅': '甲','卯': '乙','辰': '戊','巳': '丁',
+    '午': '丙','未': '己','申': '庚','酉': '辛','戌': '戊','亥': '癸'
+};
 const jiazi = ["甲子", "乙丑", "丙寅", "丁卯", "戊辰", "己巳", "庚午", "辛未", "壬申", "癸酉",
                 "甲戌", "乙亥", "丙子", "丁丑", "戊寅", "己卯", "庚辰", "辛巳", "壬午", "癸未",
                 "甲申", "乙酉", "丙戌", "丁亥", "戊子", "己丑", "庚寅", "辛卯", "壬辰", "癸巳",
@@ -31,6 +36,13 @@ const TEN_GODS = {
     '壬': ['食神', '伤官', '偏财', '正财', '七杀', '正官', '偏印', '正印', '比肩', '劫财'],
     '癸': ['伤官', '食神', '正财', '偏财', '正官', '七杀', '正印', '偏印', '劫财', '比肩']
 };
+
+const dTenGods = {
+    '比肩': '比','劫财': '劫','食神': '食','伤官': '伤','正财': '财',
+    '偏财': '才','正官': '官','七杀': '杀','正印': '印','偏印': '枭'
+};
+
+
 const LONGEVITY_TABLE = {
     '甲': ['沐浴', '冠带', '临官', '帝旺', '衰', '病', '死', '墓', '绝', '胎', '养', '长生'],
     '乙': ['病', '衰', '帝旺', '临官', '冠带', '沐浴', '长生', '养', '胎', '绝', '墓', '死'],
@@ -5049,7 +5061,9 @@ function calculateBazi(date) {
     let minute = date.getMinutes();
 
     // 提取创建日期的函数
-    const createDate = (index) => new Date(year, month, 
+    const createDate = (index) => new Date(
+        1900+Math.trunc(index/24),
+        Math.trunc(index%24/2),
         ...jieQidate[index].match(/.{2}/g).map(Number)
     );
 
@@ -5071,5 +5085,32 @@ function calculateBazi(date) {
     let hz = Math.floor((hour+1)/2) % 12;//时柱
     hz =  tianGan[(tianGan.indexOf(dz[0]) * 2+hz) % 10] + diZhi[hz];//时柱
 
-    return [0,1].map(i => [yz[i], mz[i], dz[i], hz[i]]);
+    return [...[0,1].map(i => [yz[i], mz[i], dz[i], hz[i]]), sjq, xjq];
+}
+
+function calculateDayun(date,yg,yuezhu,xingbie,sjq,xjq){
+    let isShun = (xingbie === '男' && YIN_YANG[yg] === '阳') || (xingbie === '女' && YIN_YANG[yg] === '阴');
+    let minutes = Math.abs(isShun ? xjq - date : date - sjq) / 60000;
+    
+    let y = Math.trunc(minutes / 4320);
+    minutes %= 4320;
+    let m = Math.trunc(minutes / 360);
+    minutes %= 360;
+    let d = Math.trunc(minutes / 12);
+    let h = Math.trunc(minutes % 12) * 2;
+    
+    let sign = isShun ? 1 : -1;
+    let ega = date.getFullYear();
+    date.setFullYear(date.getFullYear() + sign * y);
+    date.setMonth(date.getMonth() + sign * m);
+    date.setDate(date.getDate() + sign * d);
+    date.setHours(date.getHours() + sign * h);
+
+    return {
+        qiyun: `出生后${y}岁${m}个月${d}天${h}小时起运`,
+        qiyunDate: date,
+        qiyunYear: [...Array(12)].map((_, i) => date.getFullYear() + i * 10),
+        qiyunEga: [...Array(12)].map((_, i) => (date.getFullYear() + i * 10)-ega),
+        qiyunGanZhi: [...Array(12)].map((_, i) => jiazi[(jiazi.indexOf(yuezhu) + (i + 1) * sign + 60) % 60]),
+    };
 }

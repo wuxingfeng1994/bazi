@@ -13,7 +13,9 @@ const app = createApp({
             };
             return map[element] || '';
         };
-
+        const getdTenGods = (rz,g) => {
+            return dTenGods[TEN_GODS[rz][tianGan.indexOf(dztotg[g])]];
+        };
         const personInfo = ref({
             name: 'XXX',
             gender: '男',
@@ -33,21 +35,40 @@ const app = createApp({
             selfSits: [],//自坐
             emptyDeaths: [],//空亡
             nayins: [],//纳音
-            divineEvilsList: []//神煞
+            divineEvilsList: [],//神煞
         });
-
         const selectedYear = ref(1994);
         const selectedMonth = ref(11);
         const selectedDay = ref(28);
         const selectedHour = ref(21);
         const selectedMinute = ref(49);
         const showPicker = ref(false);
+
+
         const years = [...Array(200).keys()].map(i => i + 1900);
         const months = [...Array(12).keys()].map(i => i + 1);
         const days = ref([...Array(30).keys()].map(i => i + 1));
         const hours = [...Array(24).keys()];
         const minutes = [...Array(60).keys()];
-
+        const dayun = ref({
+            qiyun: '',
+            qiyunDate: '',
+            qiyunYear: [],
+            qiyunEga: [],
+            qiyunGanZhi:[],
+            qiyunTenGods:[]
+        });
+        const liunian = ref({
+            y:{year:[],age:[],ganZhi:[],tenGods:[]},
+            m:{year:[],age:[],ganZhi:[],tenGods:[]},
+            d:{year:[],age:[],ganZhi:[],tenGods:[]}
+        });
+        
+        // 选择变量
+        const selectedDayunIndex = ref(0); // 大运选中索引
+        const selectedLiunianIndex = ref(0); // 流年选中索引
+        const selectedLiuyueIndex = ref(0); // 流月选中索引
+        const selectedLiuriIndex = ref(0); // 流日选中索引
         /**
          * 计算
          */
@@ -68,6 +89,8 @@ const app = createApp({
 
             const tg = baziResult[0];//天干
             const dz = baziResult[1];//地支
+            dayun.value = calculateDayun(date,baziResult[0][0],baziResult[0][1]+baziResult[1][1],personInfo.value.gender,baziResult[2],baziResult[3]);
+            dayun.value.qiyunTenGods = [...dayun.value.qiyunGanZhi.map(item => getdTenGods(tg[2],item[0])+getdTenGods(tg[2],item[1]))];
             bazi.value.heavenlyStems = tg;//天干
             bazi.value.earthlyBranches = dz;//地支
             for (let i = 0; i < 4; i++) {
@@ -155,6 +178,33 @@ const app = createApp({
             confirmDate();
         });
 
+        // 监控大运选择变化
+        watch(selectedDayunIndex, (newIndex) => {
+           for (let i = 0; i < 10; i++) {
+                liunian.value.y.year[i]= liunian.value.y.year[selectedDayunIndex.value]+i;
+                liunian.value.y.age[i]= liunian.value.y.year[i]-selectedYear.value;
+                liunian.value.y.ganZhi[i]= GAN_ZHI[liunian.value.y.year[i]%12];
+           }
+        });
+        
+        // 监控流年选择变化
+        watch(selectedLiunianIndex, (newIndex) => {
+            console.log('流年选择变化:', newIndex);
+            // 这里可以添加流年选择变化时的逻辑
+        });
+        
+        // 监控流月选择变化
+        watch(selectedLiuyueIndex, (newIndex) => {
+            console.log('流月选择变化:', newIndex);
+            // 这里可以添加流月选择变化时的逻辑
+        });
+        
+        // 监控流日选择变化
+        watch(selectedLiuriIndex, (newIndex) => {
+            console.log('流日选择变化:', newIndex);
+            // 这里可以添加流日选择变化时的逻辑
+        });
+
         return {
             personInfo,
             bazi,
@@ -170,10 +220,16 @@ const app = createApp({
             selectedDay,
             selectedHour,
             selectedMinute,
+            dayun,
+            liunian,
+            selectedDayunIndex,
+            selectedLiunianIndex,
+            selectedLiuyueIndex,
+            selectedLiuriIndex,
             getElementClass,
             handleWheelScroll,
             confirmDate,
-            scrollToToday,
+            scrollToToday
         };
     }
 });

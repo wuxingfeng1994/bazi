@@ -345,3 +345,186 @@
     color: white;
     font-weight: 600;
 }
+
+/* 大运区域样式 */
+.luck-section {
+    background-color: white;
+    border-top: 1px solid #eee;
+    padding: 12px 16px;
+}
+
+/* 大运头部样式 */
+.luck-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* 大运信息样式 */
+.luck-info {
+    flex: 1;
+}
+
+/* 大运信息文本样式 */
+.luck-info p {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+/* 大运司令样式 */
+.luck-commander {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 大运司令文本样式 */
+.luck-commander span {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 大运司令名称样式 */
+.commander-name {
+    color: #007bff !important;
+    font-weight: 600;
+}
+
+/* 大运司令按钮样式 */
+.commander-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+}
+
+/* 大运容器样式 */
+.luck-container {
+    display: flex;
+    align-items: stretch;
+}
+
+/* 大运固定标签样式 */
+.luck-fixed-label {
+    flex: 0 0 auto;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #ddd;
+    background-color: white;
+    min-height: 80px;
+}
+
+/* 大运标签文本样式 */
+.luck-label-text {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+    letter-spacing: 2px;
+}
+
+/* 大运滚动容器样式 */
+.luck-scroll {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 0;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    min-height: 80px;
+}
+
+/* 隐藏滚动条 */
+.luck-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* 隐藏滚动条（Firefox） */
+.luck-scroll {
+    scrollbar-width: none;
+}
+
+/* 大运年份项目样式 */
+.luck-year-item {
+    flex: 0 0 auto;
+    width: 40px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    transition: all 0.2s;
+}
+
+/* 大运年份项目激活样式 */
+.luck-year-item.active {
+    background-color: #e4dcdc;
+}
+
+/* 大运年份样式 */
+.luck-year {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* 大运年龄样式 */
+.luck-age {
+    font-size: 10px;
+    color: #666;
+}
+
+/* 大运小运样式 */
+.luck-xiaoyun {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    align-items: center;
+    justify-items: start;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+}
+
+/* 大运地支样式 */
+.luck-dizhi {
+    font-size: 14px;
+    font-weight: 600;
+    grid-row: 2;
+    grid-column: 1;
+}
+
+/* 大运地支十神样式 */
+.luck-dizhi-type {
+    font-size: 10px;
+    color: #666;
+    grid-row: 2;
+    grid-column: 2;
+}
+
+/* 大运天干样式 */
+.luck-tiangan {
+    font-size: 14px;
+    font-weight: 600;
+    grid-row: 1;
+    grid-column: 1;
+}
+
+/* 大运天干十神样式 */
+.luck-tiangan-type {
+    font-size: 10px;
+    color: #666;
+    grid-row: 1;
+    grid-column: 2;
+}
