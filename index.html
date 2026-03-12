@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>八字排盘</title>
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="js/vue.global.js"></script>
     <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -118,9 +118,9 @@
                     <div class="luck-label-text">大运</div>
                 </div>
                 <div class="luck-scroll">
-                    <div class="luck-year-item" v-for="(item, index) in dayun.qiyunYear" :key="index" :class="{ active: index === selectedDayunIndex }" @click="selectedDayunIndex = index">
+                    <div class="luck-year-item" v-for="(item, index) in dayun.qiyunYear" :key="index" :class="{ active: item === selectedDayunIndex }" @click="selectLuck(item,'大运')">
                         <div class="luck-year">{{ item }}</div>
-                        <div class="luck-age">{{ dayun.qiyunEga[index] }}</div>
+                        <div class="luck-age">{{ dayun.qiyunEga[index] }} 岁</div>
                         <div class="luck-xiaoyun">
                             <div class="luck-tiangan" :class="getElementClass(dayun.qiyunGanZhi[index][0])">{{ dayun.qiyunGanZhi[index][0] }}</div>
                             <div class="luck-tiangan-type">{{ dayun.qiyunTenGods[index][0] }}</div>
@@ -135,14 +135,14 @@
                     <div class="luck-label-text">流年</div>
                 </div>
                 <div class="luck-scroll">
-                    <div class="luck-year-item" v-for="(item, index) in liunian.y.year" :key="index" :class="{ active: index === selectedLiunianIndex }" @click="selectedLiunianIndex = index">
+                    <div class="luck-year-item" v-for="(item, index) in liunian.year" :key="index" :class="{ active: item === selectedLiunianIndex }" @click="selectLuck(item,'流年')">
                         <div class="luck-year">{{ item }}</div>
-                        <div class="luck-age">{{ liunian.y.age[index] }}</div>
+                        <div class="luck-age">{{ liunian.age[index] }} 岁</div>
                         <div class="luck-xiaoyun">
-                            <div class="luck-tiangan" :class="getElementClass(liunian.y.ganZhi[index][0])">{{ liunian.y.ganZhi[index][0] }}</div>
-                            <div class="luck-tiangan-type">{{ liunian.y.tenGods[index][0] }}</div>
-                            <div class="luck-dizhi" :class="getElementClass(liunian.y.ganZhi[index][1])">{{ liunian.y.ganZhi[index][1] }}</div>
-                            <div class="luck-dizhi-type">{{ liunian.y.ganZhi[index][1] }}</div>
+                            <div class="luck-tiangan" :class="getElementClass(liunian.ganZhi[index][0])">{{ liunian.ganZhi[index][0] }}</div>
+                            <div class="luck-tiangan-type">{{ liunian.tenGods[index][0] }}</div>
+                            <div class="luck-dizhi" :class="getElementClass(liunian.ganZhi[index][1])">{{ liunian.ganZhi[index][1] }}</div>
+                            <div class="luck-dizhi-type">{{ liunian.tenGods[index][1] }}</div>
                         </div>
                     </div>
                 </div>
@@ -152,14 +152,14 @@
                     <div class="luck-label-text">流月</div>
                 </div>
                 <div class="luck-scroll">
-                    <div class="luck-year-item" v-for="(item, index) in liunian.m.year" :key="index" :class="{ active: index === selectedLiuyueIndex }" @click="selectedLiuyueIndex = index">
+                    <div class="luck-year-item" v-for="(item, index) in liuyue.year" :key="index" :class="{ active: index === selectedLiuyueIndex }" @click="selectLuck(index,'流月')">
                         <div class="luck-year">{{ item }}</div>
-                        <div class="luck-age">{{ liunian.m.age[index] }}</div>
+                        <div class="luck-age">{{ liuyue.age[index] }}</div>
                         <div class="luck-xiaoyun">
-                            <div class="luck-tiangan" :class="getElementClass(liunian.m.ganZhi[index][0])">{{ liunian.m.ganZhi[index][0] }}</div>
-                            <div class="luck-tiangan-type">{{ liunian.m.tenGods[index][0] }}</div>
-                            <div class="luck-dizhi" :class="getElementClass(liunian.m.ganZhi[index][1])">{{ liunian.m.ganZhi[index][1] }}</div>
-                            <div class="luck-dizhi-type">{{ liunian.m.tenGods[index][1] }}</div>
+                            <div class="luck-tiangan" :class="getElementClass(liuyue.ganZhi[index][0])">{{ liuyue.ganZhi[index][0] }}</div>
+                            <div class="luck-tiangan-type">{{ liuyue.tenGods[index][0] }}</div>
+                            <div class="luck-dizhi" :class="getElementClass(liuyue.ganZhi[index][1])">{{ liuyue.ganZhi[index][1] }}</div>
+                            <div class="luck-dizhi-type">{{ liuyue.tenGods[index][1] }}</div>
                         </div>
                     </div>
                 </div>
@@ -169,14 +169,13 @@
                     <div class="luck-label-text">流日</div>
                 </div>
                 <div class="luck-scroll">
-                    <div class="luck-year-item" v-for="(item, index) in liunian.d.year" :key="index" :class="{ active: index === selectedLiuriIndex }" @click="selectedLiuriIndex = index">
+                    <div class="luck-year-item" v-for="(item, index) in liuri.year" :key="index" :class="{ active: item === selectedLiuriIndex }" @click="selectLuck(item,'流日')">
                         <div class="luck-year">{{ item }}</div>
-                        <div class="luck-age">{{ liunian.d.age[index] }}</div>
                         <div class="luck-xiaoyun">
-                            <div class="luck-tiangan" :class="getElementClass(liunian.d.ganZhi[index][0])">{{ liunian.d.ganZhi[index][0] }}</div>
-                            <div class="luck-tiangan-type">{{ liunian.d.tenGods[index][0] }}</div>
-                            <div class="luck-dizhi" :class="getElementClass(liunian.d.ganZhi[index][1])">{{ liunian.d.ganZhi[index][1] }}</div>
-                            <div class="luck-dizhi-type">{{ liunian.d.tenGods[index][1] }}</div>
+                            <div class="luck-tiangan" :class="getElementClass(liuri.ganZhi[index][0])">{{ liuri.ganZhi[index][0] }}</div>
+                            <div class="luck-tiangan-type">{{ liuri.tenGods[index][0] }}</div>
+                            <div class="luck-dizhi" :class="getElementClass(liuri.ganZhi[index][1])">{{ liuri.ganZhi[index][1] }}</div>
+                            <div class="luck-dizhi-type">{{ liuri.tenGods[index][1] }}</div>
                         </div>
                     </div>
                 </div>
@@ -279,7 +278,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/tools.js"></script>
     <script src="js/main.js"></script>
 </body>

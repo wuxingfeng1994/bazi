@@ -13,9 +13,6 @@ const app = createApp({
             };
             return map[element] || '';
         };
-        const getdTenGods = (rz,g) => {
-            return dTenGods[TEN_GODS[rz][tianGan.indexOf(dztotg[g])]];
-        };
         const personInfo = ref({
             name: 'XXX',
             gender: '男',
@@ -58,17 +55,20 @@ const app = createApp({
             qiyunGanZhi:[],
             qiyunTenGods:[]
         });
-        const liunian = ref({
-            y:{year:[],age:[],ganZhi:[],tenGods:[]},
-            m:{year:[],age:[],ganZhi:[],tenGods:[]},
-            d:{year:[],age:[],ganZhi:[],tenGods:[]}
-        });
+        const liunian = ref({year:[],age:[],ganZhi:[],tenGods:[]});
+        const liuyue = ref({year:[],age:[],ganZhi:[],tenGods:[]});
+        const liuri = ref({year:[],ganZhi:[],tenGods:[]});
         
         // 选择变量
         const selectedDayunIndex = ref(0); // 大运选中索引
         const selectedLiunianIndex = ref(0); // 流年选中索引
         const selectedLiuyueIndex = ref(0); // 流月选中索引
         const selectedLiuriIndex = ref(0); // 流日选中索引
+
+        const rz = ref('');
+        const getdTenGods = (g) => {
+            return dTenGods[TEN_GODS[rz.value][tianGan.indexOf(dztotg[g])]];
+        };
         /**
          * 计算
          */
@@ -89,8 +89,9 @@ const app = createApp({
 
             const tg = baziResult[0];//天干
             const dz = baziResult[1];//地支
+            rz.value = tg[2]; 
             dayun.value = calculateDayun(date,baziResult[0][0],baziResult[0][1]+baziResult[1][1],personInfo.value.gender,baziResult[2],baziResult[3]);
-            dayun.value.qiyunTenGods = [...dayun.value.qiyunGanZhi.map(item => getdTenGods(tg[2],item[0])+getdTenGods(tg[2],item[1]))];
+            dayun.value.qiyunTenGods = [...dayun.value.qiyunGanZhi.map(item => getdTenGods(item[0])+getdTenGods(item[1]))];
             bazi.value.heavenlyStems = tg;//天干
             bazi.value.earthlyBranches = dz;//地支
             for (let i = 0; i < 4; i++) {
@@ -173,36 +174,49 @@ const app = createApp({
             }
         });
 
+        const yuefeng = [2,3,4,5,6,7,8,9,10,11,12,1];
+        const selectLuck = (index, type) => {
+            switch (type) {
+                case '大运':
+                    selectedDayunIndex.value = index;
+                    for (let i = 0; i < 10; i++) {
+                        liunian.value.year[i] = i + index;
+                        liunian.value.age[i] = i + index - selectedYear.value;
+                        liunian.value.ganZhi[i] = jiazi[(i+index-4) % 60];
+                        liunian.value.tenGods[i] = getdTenGods(liunian.value.ganZhi[i][0]) + getdTenGods(liunian.value.ganZhi[i][1]);
+                    }
+                    break;
+                case '流年':
+                    selectedLiunianIndex.value = index;
+                    for (let i = 0; i < 12; i++) {
+                        liuyue.value.year[i] = jieQi[i * 2];
+                        liuyue.value.age[i] = yuefeng[i] + '/' + jieQidate[(index-1900)*24+2+i*2].substring(1,2);
+                        liuyue.value.ganZhi[i] = jiazi[(index*12+i+14) % 60];
+                        liuyue.value.tenGods[i] = getdTenGods(liuyue.value.ganZhi[i][0]) + getdTenGods(liuyue.value.ganZhi[i][1]);
+                    }
+                    break;
+                case '流月':
+                    selectedLiuyueIndex.value = index;
+                    let sjq = new Date(selectedLiunianIndex.value + '/' + liuyue.value.age[index]);
+                    let xjq = new Date(selectedLiunianIndex.value+1,1,jieQidate[(selectedLiunianIndex.value+1-1900)*24+2].substring(1,2));
+                    index !== 11 && (xjq = new Date(selectedLiunianIndex.value + '/' + liuyue.value.age[index+1]));
+                    let yuecha = (xjq - sjq) / (1000 * 60 * 60 * 24);
+                    liuri.value.year=[];
+                    for (let i = 0; i < yuecha; i++) {
+                        liuri.value.year[i] = `${ sjq.getMonth()+1 }/${ sjq.getDate() }`;
+                        liuri.value.ganZhi[i] = jiazi[Math.floor( sjq / 86400000+18) % 60];
+                        liuri.value.tenGods[i] = getdTenGods(liuri.value.ganZhi[i][0]) + getdTenGods(liuri.value.ganZhi[i][1]);
+                        sjq.setDate(sjq.getDate()+1);
+                    }
+                    break;
+                case '流日':
+                    selectedLiuriIndex.value = index;
+                    break;
+            }
+        };
         // 页面加载时执行一次confirmDate
         onMounted(() => {
             confirmDate();
-        });
-
-        // 监控大运选择变化
-        watch(selectedDayunIndex, (newIndex) => {
-           for (let i = 0; i < 10; i++) {
-                liunian.value.y.year[i]= liunian.value.y.year[selectedDayunIndex.value]+i;
-                liunian.value.y.age[i]= liunian.value.y.year[i]-selectedYear.value;
-                liunian.value.y.ganZhi[i]= GAN_ZHI[liunian.value.y.year[i]%12];
-           }
-        });
-        
-        // 监控流年选择变化
-        watch(selectedLiunianIndex, (newIndex) => {
-            console.log('流年选择变化:', newIndex);
-            // 这里可以添加流年选择变化时的逻辑
-        });
-        
-        // 监控流月选择变化
-        watch(selectedLiuyueIndex, (newIndex) => {
-            console.log('流月选择变化:', newIndex);
-            // 这里可以添加流月选择变化时的逻辑
-        });
-        
-        // 监控流日选择变化
-        watch(selectedLiuriIndex, (newIndex) => {
-            console.log('流日选择变化:', newIndex);
-            // 这里可以添加流日选择变化时的逻辑
         });
 
         return {
@@ -222,6 +236,8 @@ const app = createApp({
             selectedMinute,
             dayun,
             liunian,
+            liuyue,
+            liuri,
             selectedDayunIndex,
             selectedLiunianIndex,
             selectedLiuyueIndex,
@@ -229,7 +245,8 @@ const app = createApp({
             getElementClass,
             handleWheelScroll,
             confirmDate,
-            scrollToToday
+            scrollToToday,
+            selectLuck
         };
     }
 });
